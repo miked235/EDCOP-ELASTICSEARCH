@@ -55,8 +55,8 @@ node {
     def worker_number_ready=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.readyReplicas}").trim()
 
     /* Printing Result */
-    println("[MASTER] Ready pods: $master_number_ready  Current pods: $master_number_current  Scheduled pods: $master_number_scheduled")
-    println("[WORKER] Ready pods: $worker_number_ready  Current Pods: $worker_number_current  Scheduled pods: $worker_number_scheduled")
+    println("[MASTER] Scheduled Pods: $master_number_scheduled | Ready pods: $master_number_ready | Current pods: $master_number_current")
+    println("[WORKER] Scheduled Pods: $worker_number_scheduled | Ready pods: $worker_number_ready | Current Pods: $worker_number_current")
 
     /* Verifying Result */
     if(master_number_ready==master_number_scheduled) {
@@ -65,7 +65,9 @@ node {
       println("Some or all of the master pods failed")
       error("Some or all of the master pods failed")
     } 
-    if(worker_number_ready==worker_number_scheduled) {
+    if (worker_number_scheduled=="0") {
+      printlin("No worker pods scheduled."
+    } else if(worker_number_ready==worker_number_scheduled) {
       println("Worker pods are running")
     } else {
       println("Some or all of the worker pods failed")
@@ -83,12 +85,15 @@ node {
     sh(master_command)
 
     /* Worker */
-    def worker_command="kubectl get pods  | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
-    def first_worker_pod=sh(returnStdout: true, script: worker_command)
-    def worker_command2="kubectl logs $first_worker_pod | grep started"
-    println("Worker logs:")
-    println(worker_command2)
-    sh(worker_command)
+    def worker_number_scheduled=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.replicas}").trim()
+    if (worker_number_scheduled!="0") {
+      def worker_command="kubectl get pods  | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
+      def first_worker_pod=sh(returnStdout: true, script: worker_command)
+      def worker_command2="kubectl logs $first_worker_pod | grep started"
+      println("Worker logs:")
+      println(worker_command2)
+      sh(worker_command)
+    }
   }
 
   stage('Verify cluster health') {
@@ -114,7 +119,7 @@ node {
     /* Get elasticsearch template init logs */
     def init_job_command="kubetl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-post-installs-job | awk "+'{\'print $1\'}'+"| head -1"
     def init_job_pod=sh(returnStdout: true, script: init_job_command)
-    def init_job_status=sh(returnStdout: true, script: "kubectl get pod $user_id-$tool_name-$env.BUILD_ID-$tool_name-post-installs-job  -o jsonpath={.status.phase}").trim()
+    def init_job_status=sh(returnStdout: true, script: "kubectl get pod $init_job_pod -o jsonpath={.status.phase}").trim()
     
     if(init_job_status=="Succeeded") {
       println("Initialization jobs completed successfully.")
