@@ -66,7 +66,7 @@ node {
       error("Some or all of the master pods failed")
     } 
     if (worker_number_scheduled=="0") {
-      printlin("No worker pods scheduled.")
+      println("No worker pods scheduled.")
     } else if(worker_number_ready==worker_number_scheduled) {
       println("Worker pods are running")
     } else {
