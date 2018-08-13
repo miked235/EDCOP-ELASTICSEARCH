@@ -114,6 +114,20 @@ node {
       error("ERROR: Cluster health is red, something went wrong")
     }
   }
+}
+
+    def health=sh(returnStdout: true, script: health_command).trim()
+
+    /* Health should be green */
+    if(health=="green") {
+      println("Cluster health is green")
+    } else if (health=="yellow") {
+      println("WARNING: Cluster health is yellow")
+    } else {
+      println("ERROR: Cluster health is red, something went wrong")
+      error("ERROR: Cluster health is red, something went wrong")
+    }
+  }
   
   stage('Verify init scripts completed') {
     /* Get elasticsearch template init logs */
