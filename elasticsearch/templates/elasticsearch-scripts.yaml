@@ -37,6 +37,7 @@ data:
         }
       }
       '
+      echo
     else
       {{- if .Values.snapshotConfig.enabled }}
       echo "Index settings template already exists, skipping..."
@@ -66,12 +67,13 @@ data:
         }
       }
       '
+      echo
     else
       echo "Snapshot index already exists, nothing to do."
       exit
     fi
     {{- end }}
-    
+     
     echo "Initialization checks completed, exiting..."
     
 ---
