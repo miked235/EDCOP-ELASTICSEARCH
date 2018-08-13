@@ -114,7 +114,7 @@ node {
     /* Get elasticsearch template init logs */
     def init_job_command="kubetl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-post-installs-job | awk "+'{\'print $1\'}'+"| head -1"
     def init_job_pod=sh(returnStdout: true, script: init_job_command)
-    def init_job_status=sh(returnStdout: true, script: ""kubectl get pod $user_id-$tool_name-$env.BUILD_ID-$tool_name-post-installs-job  -o jsonpath={.status.phase}").trim()
+    def init_job_status=sh(returnStdout: true, script: "kubectl get pod $user_id-$tool_name-$env.BUILD_ID-$tool_name-post-installs-job  -o jsonpath={.status.phase}").trim()
     
     if(init_job_status=="Succeeded") {
       println("Initialization jobs completed successfully.")
