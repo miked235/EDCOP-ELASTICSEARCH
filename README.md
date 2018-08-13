@@ -20,6 +20,14 @@ Table of Contents
 		* [Schedule](#schedule)
 		* [Closing Indices](#closing-indices)
 		* [Deleting Indices](#deleting-indices)
+		
+# Deployment Guide
+
+This Elasticsearch chart is designed to be deployed on EDCOP.  By default, this values chart will deploy a single master pod that is suitable for small test environments.  To scale this deploy it will be necessary to properly plan and configure a number of these settings depending on the hardware architecture as well as the amount of data that will be ingested.
+
+More information can be found at https://github.com/sealingtech/EDCOP/blob/master/docs/storage_guide.rst
+
+To prevent data loss, it is important to understand the procedures from this guide.
 	
 # Configuration Guide
 
@@ -67,21 +75,21 @@ volumes:
 	  
 ## Node Selector
 
-This value tells Kubernetes which hosts the statefulsets should be deployed to by using labels given to the hosts. Hosts without the defined label will not receive pods. 
+This value tells Kubernetes which hosts the statefulsets should be deployed to by using labels given to the hosts. Hosts without the defined label will not receive pods. Client pods will only deploy to nodes labeled 'data=true' while the master pod will only deploy to the node labeled 'infrastructure=true'. 
  
 ```
 nodeSelector:
-  client: worker
-  master: master
+  client: data
+  master: infrastructure
 ```
  
 To find out what labels your hosts have, please use the following:
 ```
 # kubectl get nodes --show-labels
 NAME		STATUS		ROLES		AGE		VERSION		LABELS
-master 		Ready		master		1d		v1.10.0		...,nodetype=master
-minion-1	Ready		<none>		1d		v1.10.0		...,nodetype=minion
-minion-2	Ready		<none>		1d		v1.10.0		...,nodetype=minion
+master 		Ready		master		1d		v1.10.0		...,infrastructure=true
+minion-1	Ready		<none>		1d		v1.10.0		...,data=true
+minion-2	Ready		<none>		1d		v1.10.0		...,data=true
 ```
 
 ## Elasticsearch Configuration

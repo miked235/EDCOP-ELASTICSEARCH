@@ -32,14 +32,19 @@ elasticsearchConfig:
     auto_expand_replicas: 0-2
   env:
     clustername: edcop
-    javaopts: -Xms4g -Xmx4g
+    javaopts: -Xms2g -Xmx2g
+  jvm:
+    # Xms represents the initial size of total heap space
+    # Xmx represents the maximum size of total heap space
+    xmx: 2g
+    xms: 2g
   # Requests are set to accommodate limited resource VMs
   requests:
     cpu: 100m
     memory: 64Mi
   limits:
-    cpu: 4 
-    memory: 32Gi
+    cpu: 2 
+    memory: 4Gi
 snapshotConfig:
   # Set to 'true' to enable it, false to disable. 
   enabled: false
