@@ -110,7 +110,7 @@ node {
     }
   }
   
-  stage{'Verify init scripts completed') {
+  stage('Verify init scripts completed') {
     /* Get elasticsearch template init logs */
     def init_job_command="kubetl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-post-installs-job | awk "+'{\'print $1\'}'+"| head -1"
     def init_job_pod=sh(returnStdout: true, script: init_job_command)
