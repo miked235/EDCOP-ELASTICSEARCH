@@ -102,6 +102,7 @@ node {
     def first_master_pod=sh(returnStdout: true, script: master_command)
     /* You MUST have jq installed on Jenkins' filesystem or container */
     def health_command="kubectl exec -i $first_master_pod" + '-- bash -c' + "\"curl -X --head data-service" + ':' + "9200/_cluster/health\" | jq --raw-output \'.status\'"
+    println(health_command)
     def health=sh(returnStdout: true, script: health_command).trim()
 
     /* Health should be green */
