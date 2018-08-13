@@ -103,7 +103,7 @@ node {
     /* You MUST have jq installed on Jenkins' filesystem or container */
     
     
-    def health_command="kubectl exec -i " + '$first_master_pod' + " -- bash -c \"curl -X --head data-service" + ':' + "9200/_cluster/health\" | jq --raw-output \'.status\'"
+    def health_command="kubectl exec -i " + "$first_master_pod" + " -- bash -c \"curl -X --head data-service" + ':' + "9200/_cluster/health\" | jq --raw-output \'.status\'"
     
     
     println(health_command)
