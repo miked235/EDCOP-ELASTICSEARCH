@@ -317,7 +317,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: CLUSTER_NAME
-          value: {{ .Values.elasticsearchConfig.env.clustername }}
+          value: {{ .Values.elasticsearchConfig.clustername }}
         - name: NODE_MASTER
           value: "false"
         - name: NODE_INGEST
@@ -329,7 +329,7 @@ spec:
         - name: NETWORK_HOST
           value: _eth0_,_lo_
         - name: ES_JAVA_OPTS
-          value: "-XX:UseAVX=2 {{ .Values.elasticsearchConfig.env.javaopts }}"
+          value: "-XX:UseAVX=2 {{ .Values.elasticsearchConfig.breakoutRolesSettings.data.env.javaopts }}"
         - name: DISCOVERY_SERVICE
           value: es-discovery
         ports:
@@ -339,11 +339,11 @@ spec:
           containerPort: 9300
         resources:
           requests:
-            cpu: "{{ .Values.elasticsearchConfig.requests.cpu }}"
-            memory: "{{ .Values.elasticsearchConfig.requests.memory }}"
+            cpu: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.data.resources.requests.cpu }}"
+            memory: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.data.resources.requests.memory }}"
           limits:
-            cpu: "{{ .Values.elasticsearchConfig.limits.cpu }}"
-            memory: "{{ .Values.elasticsearchConfig.limits.memory }}"
+            cpu: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.data.resources.limits.cpu }}"
+            memory: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.data.resources.limits.memory }}"
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: esdata
