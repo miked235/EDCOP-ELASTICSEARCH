@@ -294,15 +294,6 @@ spec:
         securityContext:
           runAsUser: {{ .Values.elasticsearchConfig.runAsUser }}
           fsGroup: {{ .Values.elasticsearchConfig.fsGroup }}
-        #affinity:
-        #  podAntiAffinity:
-        #    requiredDuringSchedulingIgnoredDuringExecution:
-        #      - topologyKey: "kubernetes.io/hostname"
-        #        labelSelector:
-        #          matchLabels:
-        #            app: "{{ template "elasticsearch.name" . }}"
-        #            release: "{{ .Release.Name }}"
-        #            component: "data"
         readinessProbe:
           httpGet:
             path: /_cluster/health
@@ -366,7 +357,15 @@ spec:
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
         {{- end }}
-
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  role: "data"
       volumes:
       - name: esdata
         hostPath:

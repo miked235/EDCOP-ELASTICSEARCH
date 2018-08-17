@@ -106,7 +106,14 @@ spec:
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
         {{- end }}
-
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
       volumes:
       - name: esdata
         hostPath:
