@@ -358,14 +358,13 @@ spec:
           name: elasticsearch-snapshots
         {{- end }}
       affinity:
-        nodeAntiAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: "{{ template "elasticsearch.name" . }}"
-                  release: "{{ .Release.Name }}"
-                  role: "data"
+            labelSelector:
+              matchLabels:
+                key: "app"
+                operator: "Exists"
+                values: ["{{ template "elasticsearch.name" . }}"]
       volumes:
       - name: esdata
         hostPath:
