@@ -361,7 +361,7 @@ spec:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
-              matchLabels:
+              matchExpressions:
               - key: role
                 operator: Exists
                 values: 
