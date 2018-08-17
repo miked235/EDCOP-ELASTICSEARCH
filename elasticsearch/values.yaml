@@ -57,7 +57,8 @@ elasticsearchConfig:
     master:
       # Master nodes control cluster functions only. They do not store data,
       # query indices, or ingest data. 
-      nodes: 1
+      # Minimum 3 for high availability
+      nodes: 3
       env:
         javaopts: -Xms2g -Xmx2g
         jvm:

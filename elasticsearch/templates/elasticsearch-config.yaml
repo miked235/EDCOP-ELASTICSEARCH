@@ -22,6 +22,7 @@ data:
     # Use a descriptive name for your cluster:
     #
     cluster.name: ${CLUSTER_NAME}
+    cluster.routing.allocation.awareness.attributes: node_name
     #
     # ------------------------------------ Node ------------------------------------
     #
@@ -33,7 +34,7 @@ data:
     #
     # Add custom attributes to the node:
     #
-    #node.attr.rack: r1
+    node.attr.node_name: ${NODE_NAME}
     #
     # ----------------------------------- Paths ------------------------------------
     #
