@@ -15,12 +15,14 @@ spec:
   replicas: {{ .Values.elasticsearchConfig.breakoutRolesSettings.master.nodes }}
   selector:
     matchLabels:
+      app: {{ template "elasticsearch.name" . }}
       component: {{ template "elasticsearch.name" . }}
       role: master
   template:
     metadata:
       name: {{ template "elasticsearch.name" . }}-master
       labels:
+        app: {{ template "elasticsearch.name" . }}
         component: {{ template "elasticsearch.name" . }}
         role: master
       annotations:
