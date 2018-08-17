@@ -112,11 +112,13 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            labelSelector:
+          - labelSelector:
               matchLabels:
-                key: "app"
-                operator: "Exists"
-                values: ["{{ template "elasticsearch.name" . }}"]
+              - key: app
+                operator: Exists
+                values: 
+                - {{ template "elasticsearch.name" . }}
+            topologyKey: kubernetes.io/hostname
       volumes:
       - name: esdata
         hostPath:
