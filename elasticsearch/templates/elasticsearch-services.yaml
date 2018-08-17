@@ -31,10 +31,9 @@ metadata:
   name: es-discovery
   namespace: {{ .Values.namespace }}
   labels:
+    app: {{ template "elasticsearch.name" . }}
     component: {{ template "elasticsearch.name" . }}
-    {{- if ne .Values.elasticsearchConfig.breakoutRoles true }}
     role: master
-    {{- end }}
 spec:
   ports:
   - name: tcp-9300
@@ -43,10 +42,9 @@ spec:
     targetPort: 9300
   clusterIP: None
   selector:
+    app: {{ template "elasticsearch.name" . }}
     component: {{ template "elasticsearch.name" . }}
-    {{- if ne .Values.elasticsearchConfig.breakoutRoles true }}
     role: master
-    {{- end }}
 
 {{- if .Values.elasticsearchConfig.breakoutRoles }}
 ---
