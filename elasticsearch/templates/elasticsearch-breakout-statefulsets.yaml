@@ -358,7 +358,7 @@ spec:
           name: elasticsearch-snapshots
         {{- end }}
       affinity:
-        podAntiAffinity:
+        nodeAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
