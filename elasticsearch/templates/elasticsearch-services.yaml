@@ -53,21 +53,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "elasticsearch.fullname" . }}-master-headless
-  namespace: {{ .Values.namespace }}
-  labels:
-    component: {{ template "elasticsearch.name" . }}
-    role: master
-spec:
-  clusterIP: None
-  selector:
-    component: {{ template "elasticsearch.name" . }}
-    role: master
-    
----
-apiVersion: v1
-kind: Service
-metadata:
   name: {{ template "elasticsearch.fullname" . }}-client-headless
   namespace: {{ .Values.namespace }}
   labels:
@@ -93,19 +78,5 @@ spec:
   selector:
     component: {{ template "elasticsearch.name" . }}
     role: data
-    
-{{- else }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "elasticsearch.fullname" . }}-headless
-  namespace: {{ .Values.namespace }}
-  labels:
-    component: {{ template "elasticsearch.name" . }}
-spec:
-  clusterIP: None
-  selector:
-    component: {{ template "elasticsearch.name" . }}
-    
+ 
 {{- end }}

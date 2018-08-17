@@ -11,7 +11,7 @@ metadata:
     component: {{ template "elasticsearch.name" . }}
     role: master
 spec:
-  serviceName: "{{ template "elasticsearch.fullname" . }}-master-headless"
+  serviceName: "es-discovery"
   replicas: {{ .Values.elasticsearchConfig.breakoutRolesSettings.master.nodes }}
   selector:
     matchLabels:

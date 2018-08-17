@@ -53,7 +53,7 @@ node {
     println("Scheduled Pods: $number_scheduled | Ready pods: $number_ready | Current pods: $number_current")
 
     /* Verifying Result */
-    if(number_ready==number_scheduled) {
+    if(number_current==number_scheduled) {
       println("All pods are running")
     } else {
       println("Some or all of the pods failed")

@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name }}
     component: {{ template "elasticsearch.name" . }}
 spec:
-  serviceName: "{{ template "elasticsearch.fullname" . }}-headless"
+  serviceName: "es-discovery"
   replicas: {{ .Values.elasticsearchConfig.noRolesSettings.nodes }}
   selector:
     matchLabels:
