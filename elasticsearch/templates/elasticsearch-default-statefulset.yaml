@@ -115,7 +115,7 @@ spec:
           - labelSelector:
               matchExpressions:
               - key: app
-                operator: Exists
+                operator: In
                 values: 
                 - {{ template "elasticsearch.name" . }}
             topologyKey: kubernetes.io/hostname

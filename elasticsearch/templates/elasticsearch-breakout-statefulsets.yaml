@@ -363,7 +363,7 @@ spec:
           - labelSelector:
               matchExpressions:
               - key: role
-                operator: Exists
+                operator: In
                 values: 
                 - data
             topologyKey: kubernetes.io/hostname
