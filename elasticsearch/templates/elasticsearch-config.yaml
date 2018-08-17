@@ -31,6 +31,7 @@ data:
     node.master: ${NODE_MASTER}
     node.ingest: ${NODE_INGEST}
     node.data: ${NODE_DATA}
+    node.max_local_storage_nodes: {{ .Values.elasticsearchConfig.maxLocalNodes }}
     #
     # Add custom attributes to the node:
     #

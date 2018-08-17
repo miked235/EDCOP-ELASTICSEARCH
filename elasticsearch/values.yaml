@@ -1,4 +1,5 @@
 # EDCOP Elasticsearch Chart values
+# Place each cluster in a separate namespace for multitenancy
 namespace: default
 images:
   # Base image (es): docker.elastic.co/elasticsearch/elasticsearch:6.3.0
@@ -19,6 +20,8 @@ nodeSelector:
   master: infrastructure
 elasticsearchConfig:
   clustername: edcop
+  # Increase this number to allow for multiple Elasticsearch clusters (separate namespaces ONLY!) to exist on the same box. 
+  maxLocalNodes: 1
   # runAsUser refers to the UID of the user who owns the persistent data location specified above
   # fsGroup refers to the group ID the container should run as 
   runAsUser: 2000
