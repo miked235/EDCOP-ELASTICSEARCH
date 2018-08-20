@@ -33,7 +33,9 @@ metadata:
   labels:
     app: {{ template "elasticsearch.name" . }}
     component: {{ template "elasticsearch.name" . }}
+    {{- if .Values.elasticsearchConfig.breakoutRoles }}
     role: master
+    {{- end }}
 spec:
   ports:
   - name: tcp-9300
@@ -44,4 +46,6 @@ spec:
   selector:
     app: {{ template "elasticsearch.name" . }}
     component: {{ template "elasticsearch.name" . }}
+    {{- if .Values.elasticsearchConfig.breakoutRoles }}
     role: master
+    {{- end }}

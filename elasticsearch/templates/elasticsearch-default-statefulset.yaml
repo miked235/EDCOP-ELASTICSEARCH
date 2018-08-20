@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     component: {{ template "elasticsearch.name" . }}
-    role: master
+    role: data
 spec:
   serviceName: "es-discovery"
   replicas: {{ .Values.elasticsearchConfig.noRolesSettings.nodes }}
@@ -17,14 +17,14 @@ spec:
     matchLabels:
       app: {{ template "elasticsearch.name" . }}
       component: {{ template "elasticsearch.name" . }}
-      role: master
+      role: data
   template:
     metadata:
       name: {{ template "elasticsearch.name" . }}
       labels:
         app: {{ template "elasticsearch.name" . }}
         component: {{ template "elasticsearch.name" . }}
-        role: master
+        role: data
       annotations:
         networks: '[
         { "name": "{{ .Values.networks.overlay }}" }
