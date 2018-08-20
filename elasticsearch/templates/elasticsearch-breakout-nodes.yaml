@@ -1,4 +1,4 @@
-{{- if .Values.Values.elasticsearchConfig.breakoutRolesSettings -}}
+{{- if .Values.elasticsearchConfig.breakoutRoles -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
