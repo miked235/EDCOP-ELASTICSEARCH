@@ -1,4 +1,4 @@
-{{- if .Values.elasticsearchConfig.breakoutRoles -}}
+{{- if .Values.Values.elasticsearchConfig.breakoutRolesSettings -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -101,6 +101,8 @@ spec:
             cpu: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.master.resources.limits.cpu }}"
             memory: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.master.resources.limits.memory }}"
         volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: esdata
         - mountPath: /usr/share/elasticsearch/config/jvm.options
           subPath: jvm.options
           name: elasticsearch-jvm
@@ -113,6 +115,9 @@ spec:
         {{- end }}
 
       volumes:
+      - name: esdata
+        emptyDir:
+          medium: ""
       - name: elasticsearch-jvm
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-master-jvm
@@ -131,7 +136,7 @@ spec:
 
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "elasticsearch.fullname" . }}-client
   namespace: {{ .Values.namespace }}
@@ -142,7 +147,6 @@ metadata:
     component: {{ template "elasticsearch.name" . }}
     role: client
 spec:
-  serviceName: "{{ template "elasticsearch.fullname" . }}-client-headless"
   replicas: {{ .Values.elasticsearchConfig.breakoutRolesSettings.client.nodes }}
   selector:
     matchLabels:
@@ -230,6 +234,8 @@ spec:
             cpu: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.client.resources.limits.cpu }}"
             memory: "{{ .Values.elasticsearchConfig.breakoutRolesSettings.client.resources.limits.memory }}"
         volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: esdata
         - mountPath: /usr/share/elasticsearch/config/jvm.options
           subPath: jvm.options
           name: elasticsearch-jvm
@@ -242,6 +248,9 @@ spec:
         {{- end }}
 
       volumes:
+      - name: esdata
+        emptyDir:
+          medium: ""
       - name: elasticsearch-jvm
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-client-jvm
@@ -260,7 +269,7 @@ spec:
         
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: DaemonSet
 metadata:
   name: {{ template "elasticsearch.fullname" . }}-data
   namespace: {{ .Values.namespace }}
@@ -271,8 +280,6 @@ metadata:
     component: {{ template "elasticsearch.name" . }}
     role: data
 spec:
-  serviceName: "{{ template "elasticsearch.fullname" . }}-data-headless"
-  replicas: {{ .Values.elasticsearchConfig.breakoutRolesSettings.data.nodes }}
   selector:
     matchLabels:
       component: {{ template "elasticsearch.name" . }}
@@ -376,6 +383,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
+              - key: app
+                operator: In
+                values: 
+                - {{ template "elasticsearch.name" . }}
               - key: role
                 operator: In
                 values: 

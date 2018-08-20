@@ -34,7 +34,8 @@ elasticsearchConfig:
   # No Roles mode allows all Elasticsearch nodes to be 'master eligible,' store data, and process requests. Essentially, the nodes
   # do all roles across every instance. Masters will be selected randomly from the list of nodes and all nodes store data. 
   # Breakout mode separates the roles into master, client, and data nodes so you have better control over resource allocation. Each type
-  # has its specific role and its own settings for more customization.   
+  # has its specific role and its own settings for more customization.
+  # ** Breakout mode is only recommended for large clusters (5+ nodes) with frequent queries 
   breakoutRoles: false
   noRolesSettings:
     # Nodes refers to the number of Elasticsearch nodes you have if 'breakoutRoles' is set to 'false'
@@ -58,8 +59,8 @@ elasticsearchConfig:
   breakoutRolesSettings:
     # Must have at least one node of each type 
     master:
-      # Master nodes control cluster functions only. They do not store data,
-      # query indices, or ingest data. 
+      # Master nodes control cluster functions only. They do not store data, query indices, or ingest data. 
+      # As such, they do not require lots of resources because their load is rather light. 
       # Minimum 3 for high availability
       nodes: 3
       env:
@@ -78,15 +79,15 @@ elasticsearchConfig:
           cpu: 2 
           memory: 4Gi
     client:
-      # Client nodes are in charge of ingesting data and querying indices, they do not store data. 
-      nodes: 1
+      # client nodes are in charge of ingesting data and querying indices, they do not store data.
+      nodes: 2
       env:
-        javaopts: -Xms2g -Xmx2g
+        javaopts: -Xms4g -Xmx4g
         jvm:
           # Xms represents the initial size of total heap space
-          xms: 2g
+          xms: 4g
           # Xmx represents the maximum size of total heap space
-          xmx: 2g
+          xmx: 4g
       resources:
         # Requests are set to accommodate limited resource VMs
         requests:
@@ -94,18 +95,17 @@ elasticsearchConfig:
           memory: 64Mi
         limits:
           cpu: 2 
-          memory: 4Gi
+          memory: 8Gi
     data:
-      # Data nodes CANNOT be scheduled on the same node, they are the only node type 
-      # that can store data in breakout mode. Additionally, data nodes only store data, nothing else. 
-      nodes: 1
+      # Data nodes CANNOT be scheduled on the same node as they are deployed as DaemonSets. 
+      # Additionally, they are the only node type that can store data in breakout mode 
       env:
-        javaopts: -Xms2g -Xmx2g
+        javaopts: -Xms4g -Xmx4g
         jvm:
           # Xms represents the initial size of total heap space
-          xms: 2g
+          xms: 4g
           # Xmx represents the maximum size of total heap space
-          xmx: 2g
+          xmx: 4g
       resources:
         # Requests are set to accommodate limited resource VMs
         requests:
@@ -113,7 +113,7 @@ elasticsearchConfig:
           memory: 64Mi
         limits:
           cpu: 2 
-          memory: 4Gi
+          memory: 8Gi
 snapshotConfig:
   # Set to 'true' to enable it, false to disable. 
   enabled: false

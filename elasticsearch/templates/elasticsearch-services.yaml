@@ -45,36 +45,3 @@ spec:
     app: {{ template "elasticsearch.name" . }}
     component: {{ template "elasticsearch.name" . }}
     role: master
-
-{{- if .Values.elasticsearchConfig.breakoutRoles }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "elasticsearch.fullname" . }}-client-headless
-  namespace: {{ .Values.namespace }}
-  labels:
-    component: {{ template "elasticsearch.name" . }}
-    role: client
-spec:
-  clusterIP: None
-  selector:
-    component: {{ template "elasticsearch.name" . }}
-    role: client
-    
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "elasticsearch.fullname" . }}-data-headless
-  namespace: {{ .Values.namespace }}
-  labels:
-    component: {{ template "elasticsearch.name" . }}
-    role: data
-spec:
-  clusterIP: None
-  selector:
-    component: {{ template "elasticsearch.name" . }}
-    role: data
- 
-{{- end }}
