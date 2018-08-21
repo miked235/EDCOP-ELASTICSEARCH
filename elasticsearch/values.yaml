@@ -82,7 +82,7 @@ elasticsearchConfig:
       # client nodes are in charge of ingesting data and querying indices, they do not store data.
       nodes: 2
       env:
-        javaopts: -Xms4g -Xmx4g
+        javaopts: -Xms2g -Xmx2g
         jvm:
           # Xms represents the initial size of total heap space
           xms: 4g
@@ -95,7 +95,7 @@ elasticsearchConfig:
           memory: 64Mi
         limits:
           cpu: 2 
-          memory: 8Gi
+          memory: 4Gi
     data:
       # Data nodes CANNOT be scheduled on the same node as they are deployed as DaemonSets. 
       # Additionally, they are the only node type that can store data in breakout mode 
@@ -112,7 +112,7 @@ elasticsearchConfig:
           cpu: 100m
           memory: 64Mi
         limits:
-          cpu: 2 
+          cpu: 4 
           memory: 8Gi
 snapshotConfig:
   # Set to 'true' to enable it, false to disable. 
