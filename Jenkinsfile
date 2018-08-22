@@ -99,11 +99,9 @@ node {
   }
 
   stage('Verify cluster health') {
-    if (!breakout_roles) {
-      def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
-    }
-    else {
-      def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-master | awk "+'{\'print $1\'}'+"| head -1"
+    def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
+    if (breakout_roles) {
+      command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-master | awk "+'{\'print $1\'}'+"| head -1"
     }
     def first_pod=sh(returnStdout: true, script: command).trim()
     /* You MUST have jq installed on Jenkins' filesystem or container */
