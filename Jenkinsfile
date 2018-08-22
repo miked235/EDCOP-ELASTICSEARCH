@@ -6,14 +6,12 @@ def pipeline = new io.estrado.Pipeline()
 
 node {
   def app
-
-
-
   def pwd = pwd()
   def tool_name="elasticsearch"
   def support_tool_name="curator"
   def container_dir = "$pwd/containers/"
   def custom_image = "images.elasticsearch"
+  def breakout_roles = false
   /* #def custom_values_url = "http://repos.sealingtech.com/cisco-c240-m5/elasticsearch/values.yaml" */
   def user_id = ''
   wrap([$class: 'BuildUser']) {
@@ -44,35 +42,106 @@ node {
   }
 
   stage('Verifying running pods') {
-    /* Default Nodes */
-    def number_scheduled=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.replicas}").trim()
-    def number_current=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.currentReplicas}").trim()
-    def number_ready=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.readyReplicas}").trim()
+    if (!breakout_roles) {
+      /* Default Nodes */
+      def number_scheduled=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.replicas}").trim()
+      def number_current=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.currentReplicas}").trim()
+      def number_ready=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name  -o jsonpath={.status.readyReplicas}").trim()
+    
+      /* Printing Result */
+      println("Scheduled Pods: $number_scheduled | Ready pods: $number_ready | Current pods: $number_current")
 
-    /* Printing Result */
-    println("Scheduled Pods: $number_scheduled | Ready pods: $number_ready | Current pods: $number_current")
-
-    /* Verifying Result */
-    if(number_current==number_scheduled) {
-      println("All pods are running")
-    } else {
-      println("Some or all of the pods failed")
-      error("Some or all of the pods failed")
+      /* Verifying Result */
+      if(number_ready==number_scheduled) {
+        println("All pods are running")
+      } else {
+        println("Some or all of the pods failed")
+        error("Some or all of the pods failed")
+      }
     } 
+    else {
+      /* Breakout Nodes */
+      def master_number_scheduled=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name-master  -o jsonpath={.status.replicas}").trim()
+      def master_number_current=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name-master  -o jsonpath={.status.currentReplicas}").trim()
+      def master_number_ready=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name-master  -o jsonpath={.status.readyReplicas}").trim()
+      def client_number_scheduled=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.availableReplicas}").trim()
+      def client_number_current=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.currentReplicas}").trim()
+      def client_number_ready=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.readyReplicas}").trim()
+      def data_number_scheduled=sh(returnStdout: true, script: "kubectl get daemonset $user_id-$tool_name-$env.BUILD_ID-$tool_name-data  -o jsonpath={.status.desiredNumberScheduled}").trim()
+      def data_number_current=sh(returnStdout: true, script: "kubectl get daemonset $user_id-$tool_name-$env.BUILD_ID-$tool_name-data  -o jsonpath={.status.currentNumberScheduled}").trim()
+      def data_number_ready=sh(returnStdout: true, script: "kubectl get daemonset $user_id-$tool_name-$env.BUILD_ID-$tool_name-data  -o jsonpath={.status.numberReady}").trim()
+    
+      /* Printing Result */
+      println("[MASTER NODES] Scheduled Pods: $master_number_scheduled | Ready pods: $master_number_ready | Current pods: $master_number_current")
+      println("[CLIENT NODES] Scheduled Pods: $client_number_scheduled | Ready pods: $client_number_ready | Current pods: $client_number_current")
+      println("[DATA NODES]   Scheduled Pods: $data_number_scheduled | Ready pods: $data_number_ready | Current pods: $data_number_current")
+      
+      /* Verifying Result */
+      if (master_number_ready==master_number_scheduled) {
+        println("All master pods are running")
+      } else {
+        println("Some or all of the master pods failed")
+        error("Some or all of the master pods failed")
+      }
+      if (client_number_ready==client_number_scheduled) {
+        println("All client pods are running")
+      } else {
+        println("Some or all of the client pods failed")
+        error("Some or all of the client pods failed")
+      }
+      if (data_number_ready==data_number_scheduled) {
+        println("All data pods are running")
+      } else {
+        println("Some or all of the data pods failed")
+        error("Some or all of the data pods failed")
+      }
+    }
   }
 
   stage('Verifying Elasticsearch started on first pods') {
-    /* Default Nodes */
-    def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
-    def first_pod=sh(returnStdout: true, script: command)
-    def command2="kubectl logs $first_pod | grep started"
-    println("Elasticsearch logs:")
-    println(command2) 
-    sh(command)
+    if (!breakout_roles) {
+      /* Default Nodes */
+      def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
+      def first_pod=sh(returnStdout: true, script: command)
+      def command2="kubectl logs $first_pod | grep started"
+      def logs=sh(returnStdout: true, script: command2)
+      
+      /* Print Logs */
+      println("Elasticsearch logs:")
+      println("$logs") 
+    }
+    else {
+      /* Breakout Nodes */
+      def master_command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-master | awk "+'{\'print $1\'}'+"| head -1"
+      def first_master_pod=sh(returnStdout: true, script: master_command)
+      def master_command2="kubectl logs $first_master_pod | grep started"
+      def master_logs=sh(returnStdout: true, script: master_command2)
+      def client_command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-client | awk "+'{\'print $1\'}'+"| head -1"
+      def first_client_pod=sh(returnStdout: true, script: client_command)
+      def client_command2="kubectl logs $first_client_pod | grep started"
+      def client_logs=sh(returnStdout: true, script: client_command2)
+      def data_command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-client | awk "+'{\'print $1\'}'+"| head -1"
+      def first_data_pod=sh(returnStdout: true, script: data_command)
+      def data_command2="kubectl logs $first_data_pod | grep started"
+      def data_logs=sh(returnStdout: true, script: data_command2)
+      
+      /* Print Logs */
+      println("Elasticsearch master logs:")
+      println("$master_logs")
+      println("Elasticsearch client logs:")
+      println("$client_logs")  
+      println("Elasticsearch data logs:")
+      println("$data_logs")      
+    }
   }
 
   stage('Verify cluster health') {
-    def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
+    if (!breakout_roles) {
+      def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
+    }
+    else {
+      def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-master | awk "+'{\'print $1\'}'+"| head -1"
+    }
     def first_pod=sh(returnStdout: true, script: command).trim()
     /* You MUST have jq installed on Jenkins' filesystem or container */
     def health_command="kubectl exec -i " + "$first_pod" + " -- bash -c \"curl -X --head data-service" + ':' + "9200/_cluster/health\" | jq --raw-output \'.status\'"

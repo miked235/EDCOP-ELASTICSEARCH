@@ -62,7 +62,7 @@ elasticsearchConfig:
       # Master nodes control cluster functions only. They do not store data, query indices, or ingest data. 
       # As such, they do not require lots of resources because their load is rather light. 
       # Minimum 3 for high availability
-      nodes: 3
+      nodes: 1
       env:
         javaopts: -Xms2g -Xmx2g
         jvm:
@@ -80,14 +80,14 @@ elasticsearchConfig:
           memory: 4Gi
     client:
       # client nodes are in charge of ingesting data and querying indices, they do not store data.
-      nodes: 2
+      nodes: 1
       env:
         javaopts: -Xms2g -Xmx2g
         jvm:
           # Xms represents the initial size of total heap space
-          xms: 4g
+          xms: 2g
           # Xmx represents the maximum size of total heap space
-          xmx: 4g
+          xmx: 2g
       resources:
         # Requests are set to accommodate limited resource VMs
         requests:
@@ -100,20 +100,20 @@ elasticsearchConfig:
       # Data nodes CANNOT be scheduled on the same node as they are deployed as DaemonSets. 
       # Additionally, they are the only node type that can store data in breakout mode 
       env:
-        javaopts: -Xms4g -Xmx4g
+        javaopts: -Xms2g -Xmx2g
         jvm:
           # Xms represents the initial size of total heap space
-          xms: 4g
+          xms: 2g
           # Xmx represents the maximum size of total heap space
-          xmx: 4g
+          xmx: 2g
       resources:
         # Requests are set to accommodate limited resource VMs
         requests:
           cpu: 100m
           memory: 64Mi
         limits:
-          cpu: 4 
-          memory: 8Gi
+          cpu: 2 
+          memory: 4Gi
 snapshotConfig:
   # Set to 'true' to enable it, false to disable. 
   enabled: false
