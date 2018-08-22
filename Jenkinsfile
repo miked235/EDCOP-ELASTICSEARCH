@@ -65,7 +65,7 @@ node {
       def master_number_current=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name-master  -o jsonpath={.status.currentReplicas}").trim()
       def master_number_ready=sh(returnStdout: true, script: "kubectl get sts $user_id-$tool_name-$env.BUILD_ID-$tool_name-master  -o jsonpath={.status.readyReplicas}").trim()
       def client_number_scheduled=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.availableReplicas}").trim()
-      def client_number_current=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.currentReplicas}").trim()
+      def client_number_current=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.availableReplicas}").trim()
       def client_number_ready=sh(returnStdout: true, script: "kubectl get deployment $user_id-$tool_name-$env.BUILD_ID-$tool_name-client  -o jsonpath={.status.readyReplicas}").trim()
       def data_number_scheduled=sh(returnStdout: true, script: "kubectl get daemonset $user_id-$tool_name-$env.BUILD_ID-$tool_name-data  -o jsonpath={.status.desiredNumberScheduled}").trim()
       def data_number_current=sh(returnStdout: true, script: "kubectl get daemonset $user_id-$tool_name-$env.BUILD_ID-$tool_name-data  -o jsonpath={.status.currentNumberScheduled}").trim()
@@ -105,7 +105,7 @@ node {
     }
     def first_pod=sh(returnStdout: true, script: command).trim()
     /* You MUST have jq installed on Jenkins' filesystem or container */
-    def health_command="kubectl exec -i " + "$first_pod" + " -- bash -c \"curl -X --head data-service" + ':' + "9200/_cluster/health\" | jq --raw-output \'.status\'"
+    def health_command="kubectl exec -i " + "$first_pod" + " -- bash -c \"curl --silent -X --head data-service" + ':' + "9200/_cluster/health\" | jq --raw-output \'.status\'"
     def health=sh(returnStdout: true, script: health_command).trim()
 
     /* Health should be green */
