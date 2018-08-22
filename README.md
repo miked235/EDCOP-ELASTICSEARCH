@@ -104,7 +104,7 @@ Elasticsearch is deployed as a statefulset spread across all of the correctly la
 
 ### General
 
-By default, the Elasticsearch cluster is named 'edcop' but this is an arbitrary value that you can change. However, if you're goal is to deploy a multitenant Elasticsearch cluster, you should make sure these names are different per cluster. Each cluster should have its own namespace to isolate data. The ```maxLocalNodes``` setting is *especially* important for multitenant deployments because you will need to increase this value to match the number of clusters you plan on having. By default, only one cluster is allowed and adding any additional clusters will result in an error.
+By default, the Elasticsearch cluster is named 'edcop' but this is an arbitrary value that you can change. However, if you're goal is to deploy a multitenant Elasticsearch cluster, you should make sure the names are different per cluster, and each cluster should have its own namespace to isolate data. The ```maxLocalNodes``` setting is *especially* important for multitenant deployments because you will need to increase this value to match the number of clusters you plan on having. By default, only one cluster is allowed and adding any additional clusters will result in an error.
 
 ```
 elasticsearchConfig:
@@ -224,7 +224,7 @@ elasticsearchConfig:
 
 #### Data Nodes
 
-Last but not least are data nodes which are in charge of storing all of your data, as well as performing CRUD, search, and aggregations operations. These nodes are **very** resource intensive, and you should monitor them closely will being mindful of the 32GB heap size limit for a single instance. As with client nodes, these do not count towards the master requirements and you can only have one data node per box per cluster. These nodes are deployed as daemonsets, so you do not need to define you many you want - they'll be scheduled across all data labeled nodes. For more information, please consult the [official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#data-node)
+Last but not least are data nodes which are in charge of storing all of your data, as well as performing CRUD, search, and aggregations operations. These nodes are **very** resource intensive, and you should monitor them closely while being mindful of the 32GB heap size limit for a single instance. As with client nodes, these do not count towards the master requirements and you can only have one data node per host per cluster. These nodes are deployed as daemonsets, so you do not need to define you many you want - they'll be scheduled across all data labeled nodes. For more information, please consult the [official documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#data-node)
 
 ## Snapshot Configuration
 
