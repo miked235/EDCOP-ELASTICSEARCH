@@ -98,43 +98,6 @@ node {
     }
   }
 
-  stage('Verifying Elasticsearch started on first pods') {
-    if (!breakout_roles) {
-      /* Default Nodes */
-      def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
-      def first_pod=sh(returnStdout: true, script: command)
-      def command2="kubectl logs $first_pod | grep started"
-      def logs=sh(returnStdout: true, script: command2)
-      
-      /* Print Logs */
-      println("Elasticsearch logs:")
-      println("$logs") 
-    }
-    else {
-      /* Breakout Nodes */
-      def master_command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-master | awk "+'{\'print $1\'}'+"| head -1"
-      def first_master_pod=sh(returnStdout: true, script: master_command)
-      def master_command2="kubectl logs $first_master_pod | grep started"
-      def master_logs=sh(returnStdout: true, script: master_command2)
-      def client_command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-client | awk "+'{\'print $1\'}'+"| head -1"
-      def first_client_pod=sh(returnStdout: true, script: client_command)
-      def client_command2="kubectl logs $first_client_pod | grep started"
-      def client_logs=sh(returnStdout: true, script: client_command2)
-      def data_command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name-client | awk "+'{\'print $1\'}'+"| head -1"
-      def first_data_pod=sh(returnStdout: true, script: data_command)
-      def data_command2="kubectl logs $first_data_pod | grep started"
-      def data_logs=sh(returnStdout: true, script: data_command2)
-      
-      /* Print Logs */
-      println("Elasticsearch master logs:")
-      println("$master_logs")
-      println("Elasticsearch client logs:")
-      println("$client_logs")  
-      println("Elasticsearch data logs:")
-      println("$data_logs")      
-    }
-  }
-
   stage('Verify cluster health') {
     if (!breakout_roles) {
       def command="kubectl get pods | grep $user_id-$tool_name-$env.BUILD_ID-$tool_name | awk "+'{\'print $1\'}'+"| head -1"
