@@ -11,7 +11,7 @@ node {
   def support_tool_name="curator"
   def container_dir = "$pwd/containers/"
   def custom_image = "images.elasticsearch"
-  def breakout_roles = false
+  def breakout_roles = true
   /* #def custom_values_url = "http://repos.sealingtech.com/cisco-c240-m5/elasticsearch/values.yaml" */
   def user_id = ''
   wrap([$class: 'BuildUser']) {
