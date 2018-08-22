@@ -36,7 +36,7 @@ elasticsearchConfig:
   # Breakout mode separates the roles into master, client, and data nodes so you have better control over resource allocation. Each type
   # has its specific role and its own settings for more customization.
   # ** Breakout mode is only recommended for large clusters (5+ nodes) with frequent queries 
-  breakoutRoles: false
+  breakoutRoles: true
   noRolesSettings:
     # Nodes refers to the number of Elasticsearch nodes you have if 'breakoutRoles' is set to 'false'
     # These nodes will perform all Elasticsearch functions within each instance. 
