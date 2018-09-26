@@ -5,6 +5,7 @@ images:
   # Base image (es): docker.elastic.co/elasticsearch/elasticsearch:6.3.0
   elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
   curator: bobrik/curator
+  runner: http://gcr.io/edcop-dev/edcop-runner:4
 networks:
   # Overlay is the name of the default cni network
   overlay: calico
