@@ -2,8 +2,8 @@
 # Place each cluster in a separate namespace for multitenancy
 namespace: default
 images:
-  # Base image (es): docker.elastic.co/elasticsearch/elasticsearch:6.3.0
-  elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
+  # Base image (es): docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+  elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
   curator: bobrik/curator
   runner: http://gcr.io/edcop-dev/edcop-runner:4
 networks:
@@ -37,7 +37,7 @@ elasticsearchConfig:
   # Breakout mode separates the roles into master, client, and data nodes so you have better control over resource allocation. Each type
   # has its specific role and its own settings for more customization.
   # ** Breakout mode is only recommended for large clusters (5+ nodes) with frequent queries 
-  breakoutRoles: true
+  breakoutRoles: false
   noRolesSettings:
     # Nodes refers to the number of Elasticsearch nodes you have if 'breakoutRoles' is set to 'false'
     # These nodes will perform all Elasticsearch functions within each instance. 
