@@ -2,8 +2,8 @@
 # Place each cluster in a separate namespace for multitenancy
 namespace: default
 images:
-  # Base image (es): docker.elastic.co/elasticsearch/elasticsearch:6.4.0
-  elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+  # Base image (es): docker.elastic.co/elasticsearch/elasticsearch:6.5.1
+  elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.5.1
   curator: bobrik/curator
   runner: gcr.io/edcop-dev/edcop-runner:4
 networks:
