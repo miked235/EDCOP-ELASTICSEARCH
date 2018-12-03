@@ -31,7 +31,7 @@ spec:
       ]'
     spec:
       {{- if .Values.snapshotConfig.enabled }}
-      initContainers: 
+      initContainers:
       - name: init
         image: centos
         command: ["bash","-c",'chown -R {{ .Values.elasticsearchConfig.runAsUser }}:{{ .Values.elasticsearchConfig.fsGroup }} /var/EDCOP/snapshots']
@@ -50,7 +50,7 @@ spec:
           httpGet:
             path: /_cluster/health
             port: 9200
-            scheme: HTTP 
+            scheme: HTTP
           initialDelaySeconds: 20
           periodSeconds: 10
           successThreshold: 1
@@ -109,6 +109,9 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
           name: elasticsearch-config
+        - mountPath: /etc/security/limits.conf
+          subPath: limits.conf
+          name: elasticsearch-limits
         {{- if .Values.snapshotConfig.enabled }}
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
@@ -124,6 +127,9 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-config
+      - name: elasticsearch-limits
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}-limits
       {{- if .Values.snapshotConfig.enabled }}
       - name: elasticsearch-snapshots
         persistentVolumeClaim:
@@ -164,7 +170,7 @@ spec:
       ]'
     spec:
       {{- if .Values.snapshotConfig.enabled }}
-      initContainers: 
+      initContainers:
       - name: init
         image: centos
         command: ["bash","-c",'chown -R {{ .Values.elasticsearchConfig.runAsUser }}:{{ .Values.elasticsearchConfig.fsGroup }} /var/EDCOP/snapshots']
@@ -183,7 +189,7 @@ spec:
           httpGet:
             path: /_cluster/health
             port: 9200
-            scheme: HTTP 
+            scheme: HTTP
           initialDelaySeconds: 20
           periodSeconds: 10
           successThreshold: 1
@@ -242,6 +248,9 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
           name: elasticsearch-config
+        - mountPath: /etc/security/limits.conf
+          subPath: limits.conf
+          name: elasticsearch-limits
         {{- if .Values.snapshotConfig.enabled }}
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
@@ -257,6 +266,9 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-config
+      - name: elasticsearch-limits
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}-limits
       {{- if .Values.snapshotConfig.enabled }}
       - name: elasticsearch-snapshots
         persistentVolumeClaim:
@@ -266,7 +278,7 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         {{ .Values.nodeSelector.client }} : "true"
-        
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -296,7 +308,7 @@ spec:
       ]'
     spec:
       {{- if .Values.snapshotConfig.enabled }}
-      initContainers: 
+      initContainers:
       - name: init
         image: centos
         command: ["bash","-c",'chown -R {{ .Values.elasticsearchConfig.runAsUser }}:{{ .Values.elasticsearchConfig.fsGroup }} /var/EDCOP/snapshots']
@@ -315,7 +327,7 @@ spec:
           httpGet:
             path: /_cluster/health
             port: 9200
-            scheme: HTTP 
+            scheme: HTTP
           initialDelaySeconds: 20
           periodSeconds: 10
           successThreshold: 1
@@ -374,6 +386,9 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
           name: elasticsearch-config
+        - mountPath: /etc/security/limits.conf
+          subPath: limits.conf
+          name: elasticsearch-limits
         {{- if .Values.snapshotConfig.enabled }}
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
@@ -385,11 +400,11 @@ spec:
               matchExpressions:
               - key: app
                 operator: In
-                values: 
+                values:
                 - {{ template "elasticsearch.name" . }}
               - key: role
                 operator: In
-                values: 
+                values:
                 - data
             topologyKey: kubernetes.io/hostname
       volumes:
@@ -402,6 +417,9 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-config
+      - name: elasticsearch-limits
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}-limits
       {{- if .Values.snapshotConfig.enabled }}
       - name: elasticsearch-snapshots
         persistentVolumeClaim:
