@@ -109,9 +109,6 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
           name: elasticsearch-config
-        - mountPath: /etc/security/limits.conf
-          subPath: limits.conf
-          name: elasticsearch-limits
         {{- if .Values.snapshotConfig.enabled }}
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
@@ -127,9 +124,6 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-config
-      - name: elasticsearch-limits
-        configMap:
-          name: {{ template "elasticsearch.fullname" . }}-limits
       {{- if .Values.snapshotConfig.enabled }}
       - name: elasticsearch-snapshots
         persistentVolumeClaim:
@@ -248,9 +242,6 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
           name: elasticsearch-config
-        - mountPath: /etc/security/limits.conf
-          subPath: limits.conf
-          name: elasticsearch-limits
         {{- if .Values.snapshotConfig.enabled }}
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
@@ -266,9 +257,6 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-config
-      - name: elasticsearch-limits
-        configMap:
-          name: {{ template "elasticsearch.fullname" . }}-limits
       {{- if .Values.snapshotConfig.enabled }}
       - name: elasticsearch-snapshots
         persistentVolumeClaim:
@@ -386,9 +374,6 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
           name: elasticsearch-config
-        - mountPath: /etc/security/limits.conf
-          subPath: limits.conf
-          name: elasticsearch-limits
         {{- if .Values.snapshotConfig.enabled }}
         - mountPath: /var/EDCOP/snapshots
           name: elasticsearch-snapshots
@@ -417,9 +402,6 @@ spec:
       - name: elasticsearch-config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}-config
-      - name: elasticsearch-limits
-        configMap:
-          name: {{ template "elasticsearch.fullname" . }}-limits
       {{- if .Values.snapshotConfig.enabled }}
       - name: elasticsearch-snapshots
         persistentVolumeClaim:

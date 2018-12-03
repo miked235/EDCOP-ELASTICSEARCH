@@ -51,7 +51,7 @@ data:
     #
     # Lock the memory on startup:
     #
-    #bootstrap.memory_lock: true
+    bootstrap.memory_lock: false
     #
     # Make sure that the heap size is set to about half the memory available
     # on the system and that the owner of the process is allowed to use this
