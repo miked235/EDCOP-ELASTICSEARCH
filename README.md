@@ -45,7 +45,7 @@ By default, Elasticsearch is pulled from Elastic's official repository and the C
 
 ```
 images:
-  elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.4.3
+  elasticsearch: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
   curator: bobrik/curator
 ```
 
